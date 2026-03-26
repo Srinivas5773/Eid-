@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rida Owasis Around the World</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: radial-gradient(ellipse at center, #0a0e27 0%, #000000 100%);
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Stars Background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        /* Country Display */
+        .country-display {
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 1.5s ease-in-out;
+        }
+
+        .country-display.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .country-info {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+            letter-spacing: 2px;
+        }
+
+        .name-display {
+            font-size: 4rem;
+            font-weight: 300;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.8),
+                         0 0 60px rgba(255, 215, 0, 0.5),
+                         0 0 90px rgba(255, 215, 0, 0.3);
+            animation: glow 2s ease-in-out infinite alternate;
+            line-height: 1.2;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.5), 0 0 90px rgba(255, 215, 0, 0.3); }
+            to { text-shadow: 0 0 40px rgba(255, 255, 255, 0.9), 0 0 80px rgba(255, 215, 0, 0.6), 0 0 120px rgba(255, 215, 0, 0.4); }
+        }
+
+        /* Final Display */
+        .final-display {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 20;
+            transition: opacity 2s ease-in-out;
+        }
+
+        .final-display.active {
+            opacity: 1;
+        }
+
+        .clustered-names {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .clustered-name {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0.7;
+            animation: float 6s ease-in-out infinite;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(2deg); }
+            66% { transform: translateY(10px) rotate(-2deg); }
+        }
+
+        .final-message {
+            text-align: center;
+            z-index: 21;
+            animation: fadeInScale 2s ease-out;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .main-message {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 40px rgba(255, 215, 0, 0.9);
+            line-height: 1.3;
+        }
+
+        .eid-message {
+            font-size: 2.5rem;
+            color: #ffd700;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+        }
+
+        /* Music Controls */
+        .music-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .music-controls:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .music-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .name-display {
+                font-size: 2.5rem;
+            }
+            
+            .country-info {
+                font-size: 1rem;
+            }
+            
+            .main-message {
+                font-size: 2rem;
+            }
+            
+            .eid-message {
+                font-size: 1.8rem;
+            }
+            
+            .clustered-name {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Particles */
+        .particle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.6;
+            animation: particleFloat 10s linear infinite;
+        }
+
+        @keyframes particleFloat {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Memories Section */
+        .memories-section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #0a0e27 0%, #000000 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            z-index: 30;
+            transition: opacity 3s ease-in-out;
+        }
+
+        .memories-section.active {
+            opacity: 1;
+        }
+
+        .memories-intro {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #ffd700;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+            opacity: 0;
+            animation: fadeInType 2s ease-out forwards;
+            margin-bottom: 3rem;
+        }
+
+        @keyframes fadeInType {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .memories-slideshow {
+            position: relative;
+            width: 80%;
+            max-width: 800px;
+            height: 60vh;
+            max-height: 600px;
+            display: none;
+        }
+
+        .memories-slideshow.active {
+            display: block;
+        }
+
+        .memory-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .memory-slide.active {
+            opacity: 1;
+        }
+
+        .memory-slide.highlight {
+            transform: scale(1.1);
+        }
+
+        .memory-image {
+            max-width: 100%;
+            max-height: 80%;
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.4);
+            animation: kenBurns 8s ease-in-out infinite;
+            object-fit: contain;
+        }
+
+        .memory-slide.highlight .memory-image {
+            max-height: 80%;
+            box-shadow: 0 0 80px rgba(255, 215, 0, 0.6);
+        }
+
+        @keyframes kenBurns {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .memory-caption {
+            margin-top: 2rem;
+            font-size: 1.5rem;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.5s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .highlight-text {
+            position: absolute;
+            bottom: 10%;
+            font-size: 2rem;
+            color: #ff69b4;
+            text-shadow: 0 0 30px rgba(255, 105, 180, 0.8);
+            text-align: center;
+            opacity: 0;
+            animation: fadeInScale 2s ease-out forwards;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .memories-ending {
+            position: absolute;
+            text-align: center;
+            font-size: 2rem;
+            color: #ffd700;
+            text-shadow: 0 0 40px rgba(255, 215, 0, 0.9);
+            opacity: 0;
+            z-index: 31;
+        }
+
+        .memories-ending.active {
+            animation: fadeInType 2s ease-out forwards;
+        }
+
+        /* Memory Particles */
+        .memory-particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.8) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.4;
+            animation: memoryParticleFloat 15s linear infinite;
+        }
+
+        @keyframes memoryParticleFloat {
+            from {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.4;
+                transform: translateY(80vh) translateX(20px) scale(1);
+            }
+            50% {
+                transform: translateY(40vh) translateX(-20px) scale(1.2);
+            }
+            90% {
+                opacity: 0.4;
+                transform: translateY(10vh) translateX(10px) scale(0.8);
+            }
+            to {
+                transform: translateY(-10vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Mobile Responsive for Memories */
+        @media (max-width: 768px) {
+            .memories-intro {
+                font-size: 1.8rem;
+                padding: 0 1rem;
+            }
+            
+            .memories-slideshow {
+                width: 95%;
+                height: 50vh;
+            }
+            
+            .memory-caption {
+                font-size: 1.2rem;
+            }
+            
+            .highlight-text {
+                font-size: 1.5rem;
+                padding: 0 1rem;
+            }
+            
+            .memories-ending {
+                font-size: 1.5rem;
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Stars Background -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- Particles -->
+    <div id="particles"></div>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <div class="country-display" id="countryDisplay">
+            <div class="country-info" id="countryInfo"></div>
+            <div class="name-display" id="nameDisplay"></div>
+        </div>
+    </div>
+    
+
+
+    <!-- Final Display -->
+    <div class="final-display" id="finalDisplay">
+        <div class="clustered-names" id="clusteredNames"></div>
+        <div class="final-message">
+            <div class="main-message">Rida Owasis… you shine in every corner of the world ✨</div>
+            <div class="eid-message">Eid Mubarak ❤️</div>
+        </div>
+    </div>
+
+    <!-- Memories Section -->
+    <div class="memories-section" id="memoriesSection">
+        <div class="memories-intro" id="memoriesIntro">Every moment with you matters ❤️</div>
+        
+        <div class="memories-slideshow" id="memoriesSlideshow">
+            <!-- Memory slides will be dynamically added here -->
+        </div>
+        
+        <div class="memories-ending" id="memoriesEnding">And I want many more memories with you...</div>
+    </div>
+
+    <!-- Memory Particles -->
+    <div id="memoryParticles"></div>
+    
+    <!-- Music Controls -->
+    <div class="music-controls" id="musicControls">
+        <span class="music-icon" id="musicIcon">🎵</span>
+    </div>
+    
+    <!-- Audio Element -->
+    <audio id="backgroundMusic" loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Countries Data
+        const countries = [
+            { flag: '🇮🇳', name: 'India', localName: 'रिदा ओवासिस' },
+            { flag: '🇵🇰', name: 'Pakistan', localName: 'ردا اویسس' },
+            { flag: '🇸🇦', name: 'Saudi Arabia', localName: 'رضا أواسيـس' },
+            { flag: '🇯🇵', name: 'Japan', localName: 'リダ・オワシス' },
+            { flag: '🇰🇷', name: 'South Korea', localName: '리다 오와시스' },
+            { flag: '🇨🇳', name: 'China', localName: '里达·欧瓦西斯' },
+            { flag: '🇧🇩', name: 'Bangladesh', localName: 'রিদা ওয়াসিস' },
+            { flag: '🇮🇷', name: 'Iran', localName: 'ریدا اواسیس' },
+            { flag: '🇫🇷', name: 'France', localName: 'Rida Owasis' },
+            { flag: '🇪🇸', name: 'Spain', localName: 'Rida Owasis' },
+            { flag: '🇩🇪', name: 'Germany', localName: 'Rida Owasis' },
+            { flag: '🇮🇹', name: 'Italy', localName: 'Rida Owasis' },
+            { flag: '🇷🇺', name: 'Russia', localName: 'Рида Овасис' },
+            { flag: '🇬🇷', name: 'Greece', localName: 'Ρίντα Ουάσις' },
+            { flag: '🇺🇸', name: 'USA', localName: 'Rida Owasis' },
+            { flag: '🇧🇷', name: 'Brazil', localName: 'Rida Owasis' },
+            { flag: '🇲🇽', name: 'Mexico', localName: 'Rida Owasis' },
+            { flag: '🇹🇷', name: 'Turkey', localName: 'Rida Ovasis' },
+            { flag: '🇮🇩', name: 'Indonesia', localName: 'Rida Owasis' },
+            { flag: '🇹🇭', name: 'Thailand', localName: 'ริดา โอวาซิส' }
+        ];
+
+        let currentCountryIndex = 0;
+        let isPlaying = false;
+
+        // Create Stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starCount = 150;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = star.style.height = Math.random() * 3 + 'px';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Create Particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = particle.style.height = Math.random() * 4 + 2 + 'px';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Show Country
+        function showCountry(index) {
+            const country = countries[index];
+            const countryDisplay = document.getElementById('countryDisplay');
+            const countryInfo = document.getElementById('countryInfo');
+            const nameDisplay = document.getElementById('nameDisplay');
+            
+            countryInfo.textContent = `${country.flag} ${country.name}`;
+            nameDisplay.textContent = country.localName;
+            
+            countryDisplay.classList.add('active');
+            
+            setTimeout(() => {
+                countryDisplay.classList.remove('active');
+                
+                if (index < countries.length - 1) {
+                    setTimeout(() => showCountry(index + 1), 1000);
+                } else {
+                    setTimeout(showFinalDisplay, 2000);
+                }
+            }, 3000);
+        }
+
+        // Create Clustered Names
+        function createClusteredNames() {
+            const clusteredContainer = document.getElementById('clusteredNames');
+            
+            countries.forEach((country, index) => {
+                const nameElement = document.createElement('div');
+                nameElement.className = 'clustered-name';
+                nameElement.textContent = country.localName;
+                nameElement.style.left = Math.random() * 80 + 10 + '%';
+                nameElement.style.top = Math.random() * 80 + 10 + '%';
+                nameElement.style.animationDelay = Math.random() * 6 + 's';
+                clusteredContainer.appendChild(nameElement);
+            });
+        }
+
+        // Show Final Display
+        function showFinalDisplay() {
+            createClusteredNames();
+            const finalDisplay = document.getElementById('finalDisplay');
+            finalDisplay.classList.add('active');
+            
+            // Transition to memories after 5 seconds
+            setTimeout(() => {
+                finalDisplay.classList.remove('active');
+                setTimeout(startMemoriesSection, 2000);
+            }, 5000);
+        }
+
+        // Memories Section Data
+        const memories = [
+            { image: 'photos/photo1.jpg.jpeg', caption: 'That beautiful smile 😊', highlight: false },
+            { image: 'photos/photo2.jpg.jpeg', caption: 'This moment... everything', highlight: true },
+            { image: 'photos/photo3.jpg.jpeg', caption: 'Perfect day together', highlight: false },
+            { image: 'photos/photo4.jpg.jpeg', caption: 'I\'ll never forget this', highlight: false },
+            { image: 'photos/photo5.jpg.jpeg', caption: 'Always in my heart ❤️', highlight: false }
+        ];
+
+        let currentMemoryIndex = 0;
+
+        // Create Memory Particles
+        function createMemoryParticles() {
+            const particlesContainer = document.getElementById('memoryParticles');
+            const particleCount = 15;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'memory-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = particle.style.height = Math.random() * 6 + 4 + 'px';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Start Memories Section
+        function startMemoriesSection() {
+            const memoriesSection = document.getElementById('memoriesSection');
+            memoriesSection.classList.add('active');
+            
+            // Create memory particles
+            createMemoryParticles();
+            
+            // Show intro text
+            setTimeout(() => {
+                document.getElementById('memoriesSlideshow').classList.add('active');
+                setTimeout(() => showMemory(0), 1000);
+            }, 3000);
+        }
+
+        // Show Memory
+        function showMemory(index) {
+            const slideshow = document.getElementById('memoriesSlideshow');
+            const memory = memories[index];
+            
+            // Clear previous slides
+            slideshow.innerHTML = '';
+            
+            // Create slide
+            const slide = document.createElement('div');
+            slide.className = 'memory-slide';
+            if (memory.highlight) {
+                slide.classList.add('highlight');
+            }
+            
+            // Create image
+            const img = document.createElement('img');
+            img.src = memory.image;
+            img.className = 'memory-image';
+            img.alt = memory.caption;
+            
+            // Create caption
+            const caption = document.createElement('div');
+            caption.className = 'memory-caption';
+            caption.textContent = memory.caption;
+            
+            slide.appendChild(img);
+            slide.appendChild(caption);
+            
+            // Add highlight text if this is the special memory
+            if (memory.highlight) {
+                const highlightText = document.createElement('div');
+                highlightText.className = 'highlight-text';
+                highlightText.textContent = 'This one… means everything to me ❤️';
+                slide.appendChild(highlightText);
+            }
+            
+            slideshow.appendChild(slide);
+            
+            // Show slide with animation
+            setTimeout(() => {
+                slide.classList.add('active');
+            }, 100);
+            
+            // Determine display duration
+            const displayTime = memory.highlight ? 5000 : 3500;
+            
+            // Move to next memory
+            setTimeout(() => {
+                slide.classList.remove('active');
+                
+                if (index < memories.length - 1) {
+                    setTimeout(() => showMemory(index + 1), 2000);
+                } else {
+                    setTimeout(showMemoriesEnding, 2000);
+                }
+            }, displayTime);
+        }
+
+        // Show Memories Ending
+        function showMemoriesEnding() {
+            const slideshow = document.getElementById('memoriesSlideshow');
+            slideshow.classList.remove('active');
+            
+            const ending = document.getElementById('memoriesEnding');
+            ending.classList.add('active');
+        }
+
+        // Music Controls
+        function toggleMusic() {
+            const audio = document.getElementById('backgroundMusic');
+            const musicIcon = document.getElementById('musicIcon');
+            
+            if (isPlaying) {
+                audio.pause();
+                musicIcon.textContent = '🔇';
+            } else {
+                audio.play().catch(e => {
+                    console.log('Audio play failed:', e);
+                    // Try next source if current one fails
+                    const sources = audio.querySelectorAll('source');
+                    let currentSrc = 0;
+                    
+                    for (let i = 0; i < sources.length; i++) {
+                        if (audio.src.includes(sources[i].src)) {
+                            currentSrc = i;
+                            break;
+                        }
+                    }
+                    
+                    const nextSrc = (currentSrc + 1) % sources.length;
+                    audio.src = sources[nextSrc].src;
+                    audio.play().catch(err => console.log('All audio sources failed'));
+                });
+                musicIcon.textContent = '🎵';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            createParticles();
+            
+            // Start the show
+            setTimeout(() => showCountry(0), 1000);
+            
+            // Music controls
+            document.getElementById('musicControls').addEventListener('click', toggleMusic);
+            
+            // Initialize audio
+            const audio = document.getElementById('backgroundMusic');
+            audio.volume = 0.3;
+            
+            // Set initial state
+            document.getElementById('musicIcon').textContent = '🔇';
+            
+            // Add audio load event listeners
+            audio.addEventListener('canplaythrough', () => {
+                console.log('Audio loaded successfully');
+            });
+            
+            audio.addEventListener('error', (e) => {
+                console.log('Audio error:', e);
+                document.getElementById('musicIcon').textContent = '�';
+            });
+        });
+    </script>
+</body>
+</html>
